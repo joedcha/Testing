@@ -1,0 +1,614 @@
+#!/bin/bash
+#
+#Script Name    : Main_shell
+#Description  	: Aplicacion para el manejo de Shell para Pruebas TIGO
+#
+clear
+echo "
+********************************************************************
+* Version  Fecha             Author              Description       *
+* -------  --------   ---------------------   -----------------    *
+*   1.0    23/Oct/12   Ing. Edison Chaparro     Version Inicial    *
+********************************************************************
+
+Script Name             : Main_shell
+Description		: Aplicacion Bash para ejecucion
+
+"
+echo "";
+FECHA=$(date)
+echo $FECHA;
+echo "";
+> inicio.txt;
+echo $FECHA >> inicio.txt;
+while :
+do
+ echo " ******************* MENU SHELL TIGO  **********************"
+ echo " Elija una opcion "
+ echo "1. Ejecucion Shell ATP... (En Desarrollo)"
+ echo "2. Facturacion Nuevo BRM"
+ echo "3. Gestion de Pipeline"
+ echo "4. Gestion de Pagos"
+ echo "5. Gestion de Ambientes... (En Desarrollo)"
+ echo "6. Recarga de Ciclo"
+ echo "7. Salir"
+ echo "Seleccione una opcion [1 - 7] "
+ read opcion
+ case $opcion in
+  1) clear
+     echo "
+     
+ATENCION:
+
+Antes de correr esta shell debe:
+1. Correr la fecha del PVT al ciclo
+
+EN DESARROLLO.....
+
+"
+		 echo "Consultando pvt ..."
+		 sleep 2;
+		 cd /brm/pin/7.4/sys/test/
+		 echo "\n"
+		 echo "Fecha PVT de Infranet: "
+		 pin_virtual_time;
+		 cd /brm/pin/7.4/sys/test/Main_shell;
+		 echo "\n";
+		 echo "Ingrese la fecha del PVT en el formato dia/mes/año eje: 19/01/2012 para ejecutar el UPDATE en CBA_CONFIG"
+		 read cba;
+		 cba=$(echo $cba | sed 's/\//\./g')
+		 echo $cba
+		 echo "Ejecutando Update en CBA_CONFIG....";
+		 sleep 2;
+		 #sh atp_cba.sh $cba > /brm/pin/7.4/sys/test/Main_shell/log_cba.txt
+		 echo "";
+		 #cat log_cba.txt;
+		 echo "\n";
+		 echo "Cambiando Fechas del archivo config.properties...."
+		 echo $a
+		 echo "\n"
+		 #./connect_cba "sed '/datePrueba/s/\//\./g' /cba1/config/old.properties > /cba1/config/new.config.properties"
+		 
+		 
+		 #echo "\n"
+		 #./connect_atp "`grep datePrueba /cba1/config/new.config.properties`"
+		 #echo $a;
+		 #echo "\n"
+		 #./connect_atp "/usr/bin/sed 's/'$a'/'datePrueba=$cba'/' /cba1/config/new.config.properties >/cba1/config/old.properties"
+		 #echo "\n"
+		 #./connect_atp "/usr/bin/sed '/datePrueba/s/\./\//g' /cba1/config/old.properties > /cba1/config/new.config.properties"
+		 #./connect_atp "cat /cba1/config/new.config.properties"
+		 #scp backup_config.properties pin@10.69.38.49:/infranet/pin/7.3/sys/test/Main_shell
+		 echo "\n"
+		 echo "Archivo modificado con exito..."
+		 echo ""
+		 echo "Digite el año, mes y dia del Ciclo para ejecucion de shell CBManager.sh..."
+		 echo "";
+		 echo "Digite el Año completo (ej: 2012)"
+     read anio;
+     echo "Digite el Mes en numero (ej: Para enero seria 01)"
+     read mes;
+     echo "Digite el Dia"
+     read dia;
+     echo " ";
+     echo "Conectando con servidor para ejecutar shell ...."
+     sleep 3;
+     #./connect_ssh "sh /cba1/sh/CBManager.sh $anio$mes$dia";
+     echo "";;
+  2) clear;
+  	 while :
+		do
+ 		echo "
+*********************************ATENCION**********************************
+
+Si va a facturar una jerarquia, debera tener en cuenta:
+
+a. Facturar la cuenta Hija por la opcion 2
+b. Facturar Linea Padre por opcion 1
+
+Esto con el fin de ver la facturacion tanto en la Hija como en la Padre
+
+***************************************************************************
+\n
+"
+ 		echo "\n ************ NUEVO PROCESO DE FACTURACION ************  	\n"
+ 		echo " Elija una opcion ";
+ 		echo "1. Facturar";
+ 		echo "2. Facturar Lineas Hijas Jerarquizada"
+ 		echo "3. Generar Archivos .xslt y Regeneracion de Factura";
+ 		echo "4. Volver";
+ 		echo "Seleccione una opcion [1 - 4]"
+ 		read newf
+ 		case $newf in
+  		1) clear;
+  			echo "Iniciando Proceso de Facturacion ...."
+  			echo "\n"
+  			sleep 2;
+  			cd /brm/pin/7.4/sys/test/Main_shell/
+  	 	  :> LOGFILE.txt
+  	 	  LOGFILE=/brm/pin/7.4/sys/test/Main_shell/LOGFILE.txt
+  	 	 	echo "Ingrese el Numero de la Cuenta: "
+ 		 		read fcuenta;
+ 		 		echo "";
+ 		 		echo "Ejecutando select para encontrar POID"
+	     	sleep 2;
+		./query_poid.sh $fcuenta > $LOGFILE
+		i=`cat result_query.txt`
+		cuenta=`echo $i | awk -F"|" '{print $1}'`
+    poid=`echo $i | awk -F"|" '{print $2}'`
+    echo "Exportando variables..."
+    sleep 2;
+    echo "\n*******";
+    echo "Cuenta: $cuenta";
+    echo "POID: $poid";
+    echo "*******\n";
+    echo "";
+    sleep 2;
+ 		echo "Ejecutando select para encontrar BILLINFO"
+	  sleep 2;
+ 		./query_billinfo.sh $poid > $LOGFILE
+ 		 b=`cat result_billinfo.txt`
+ 		 billinfo=`echo $b | awk -F"|" '{print $1}'`
+     status=`echo $b | awk -F"|" '{print $2}'`
+     echo "Exportando variables..."
+     sleep 2;
+     echo "\n*******";
+     echo "Billinfo: $billinfo";
+     echo "Status: $status";
+     echo "*******\n";
+     echo "Creando Archivo XML";
+     sleep 2;
+     cd /brm/pin/7.4/apps/pin_billd
+     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+
+<BusinessConfiguration
+        xmlns=\"http://www.portal.com/schemas/BusinessConfig\"
+        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+        xsi:schemaLocation=\"http://www.portal.com/schemas/BusinessConfig BusinessConfiguration.xsd\">
+
+        <!-- Sample input file for pin_bill_accts containing parameters for bill run management -->
+        <!-- Modify according to guidelines -->
+        <BillRunConfiguration>
+
+                <!-- List of DOMs for this bill run -->
+
+
+                <!-- List of Billinfo to be billed -->
+
+                <BillingList>
+                        <Account>#0</Account>
+                        <Billinfo>#7</Billinfo>
+                </BillingList>
+
+
+        </BillRunConfiguration>
+
+</BusinessConfiguration>" > PinBillRunControl_default.xml
+     sed '/#0/s/#0/'$poid'/g' PinBillRunControl_default.xml > PinBillRunControl_default_I.xml
+     sed '/#7/s/#7/'$billinfo'/g' PinBillRunControl_default_I.xml > PinBillRunControl_facturar.xml
+     echo "\n Archivo creado con exito...\n"
+     echo "****************"
+     cat PinBillRunControl_facturar.xml
+     echo "****************"
+     sleep 2;
+     echo "\n Facturando......."
+     sleep 2;
+     pin_bill_accts -verbose -file PinBillRunControl_facturar.xml
+     echo "\n";
+     exit;;
+     2) clear;
+     		echo "Iniciando Proceso de Facturacion Jerarquias...."
+  			echo "\n"
+  			sleep 2;
+  			cd /brm/pin/7.4/sys/test/Main_shell/
+  	 	  :> LOGFILE.txt
+  	 	  LOGFILE=/brm/pin/7.4/sys/test/Main_shell/LOGFILE.txt
+  	 	 	echo "Ingrese el Numero de la Cuenta: "
+ 		 		read fcuenta;
+ 		 		echo "";
+ 		 		echo "Ejecutando select para encontrar POID"
+	     	sleep 2;
+		./query_poid.sh $fcuenta > $LOGFILE
+		i=`cat result_query.txt`
+		cuenta=`echo $i | awk -F"|" '{print $1}'`
+    poid=`echo $i | awk -F"|" '{print $2}'`
+    echo "Exportando variables..."
+    sleep 2;
+    echo "\n*******";
+    echo "Cuenta: $cuenta";
+    echo "POID: $poid";
+    echo "*******\n";
+    echo "";
+    sleep 2;
+ 		echo "Ejecutando select para encontrar BILLINFO"
+	  sleep 2;
+ 		./query_billinfo.sh $poid > $LOGFILE
+ 		 b=`cat result_billinfo.txt`
+ 		 billinfo=`echo $b | awk -F"|" '{print $1}'`
+     status=`echo $b | awk -F"|" '{print $2}'`
+     echo "Exportando variables..."
+     sleep 2;
+     echo "\n*******";
+     echo "Billinfo: $billinfo";
+     echo "Status: $status";
+     echo "*******\n";
+     echo "Creando Archivo XML";
+     sleep 2;
+     cd /brm/pin/7.4/apps/pin_billd
+     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+
+<BusinessConfiguration
+        xmlns=\"http://www.portal.com/schemas/BusinessConfig\"
+        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+        xsi:schemaLocation=\"http://www.portal.com/schemas/BusinessConfig BusinessConfiguration.xsd\">
+
+        <!-- Sample input file for pin_bill_accts containing parameters for bill run management -->
+        <!-- Modify according to guidelines -->
+        <BillRunConfiguration>
+
+                <!-- List of DOMs for this bill run -->
+
+
+                <!-- List of Billinfo to be billed -->
+
+                <BillingList>
+                        <Account>#0</Account>
+                        <Billinfo>#7</Billinfo>
+                </BillingList>
+
+
+        </BillRunConfiguration>
+
+</BusinessConfiguration>" > PinBillRunControl_default.xml
+     sed '/#0/s/#0/'$poid'/g' PinBillRunControl_default.xml > PinBillRunControl_default_I.xml
+     sed '/#7/s/#7/'$billinfo'/g' PinBillRunControl_default_I.xml > PinBillRunControl_facturar_jerarquia.xml
+     echo "\n Archivo creado con exito...\n"
+     echo "****************"
+     cat PinBillRunControl_facturar_jerarquia.xml
+     echo "****************"
+     sleep 2;
+     echo "\n Facturando......."
+     sleep 2;
+     pin_bill_accts -pay_type 10007 -verbose -file PinBillRunControl_facturar_jerarquia.xml
+     echo "\n";
+     exit;;
+  		3) clear;
+  			 echo "Iniciando proceso de archivos .xslt ..."
+  			 echo "\n"
+  			 sleep 2;
+  			 cd /brm/pin/7.4/sys/test/Main_shell
+     			echo "\n";
+     			echo "--------------------------------------------------------------------------"
+     			echo "Ingrese el numero de la Factura: "
+     			read fac;
+     			echo "\nEjecutando select para encontrar el BILL"
+     			sleep 2;
+     			./query_xslt.sh $fac > $LOGFILE
+     			c=`cat result_bill.txt`
+ 		 			bill=`echo $c | awk -F"|" '{print $1}'`
+     			invoice=`echo $c | awk -F"|" '{print $2}'`
+     			echo "\nExportando variables..."
+     			sleep 2;
+     			echo "\n*******************************";
+     			echo "Bill: $bill";
+     			echo "Invoice: $invoice";
+     			echo "*******************************\n";
+     			cd /brm/pin/7.4/apps/pin_inv
+     			echo "Creando Archivo para generar Invoice...\n"
+     			sleep 2;
+  	 		echo "0 PIN_FLD_RESULTS     ARRAY [0]
+1 PIN_FLD_POID        POID [0] 0.0.0.1 /bill #7 0" >  genera_invoice_default.txt
+					sed '/#7/s/#7/'$invoice'/g' genera_invoice_default.txt > genera_invoice_QV.txt
+					cat genera_invoice_QV.txt
+					echo "\n--------------------------------------------------------------------------"
+					echo "\nDesea realizar una regeneracion de Factura ?(Y/N):  "
+					read pr;
+					case $pr in
+					[Yy]* | [Ss]* | OK | ok)echo "\nEjecutando Regeneracion de Factura.....\n"
+								sleep 2;
+								pin_inv_accts -verbose -regen -file genera_invoice_QV.txt
+								echo "\nIngrese la fecha del ciclo Inicial en formato: mm/dd/yyyy "
+								read rcicloi;
+								echo "\nIngrese la fecha del ciclo Final en formato: mm/dd/yyyy "
+								read rciclof;
+								echo "\nEjecutando Export....."
+								sleep 2;
+								pin_inv_export -verbose -start $rcicloi -end $rciclof –detail genera_invoice_QV.txt
+								echo "\n";
+								echo "Buscando archivos .xslt"
+								sleep 2;
+								cd /brm/pin/7.4/apps/pin_inv/invoice_dir
+								echo "\n"
+								echo "********************************************"
+								echo "Archivo: \n"
+								ls -ltr | tail -1;
+								echo "";
+								echo "Ruta de Salida: "
+								echo "\nRuta de salida: cd /brm/pin/7.4/apps/pin_inv/invoice_dir";
+								echo "*********************************************"
+								echo "\nSaliendo de la Aplicacion....";
+								sleep 2;
+								exit;;
+					[Nn]*)echo "\nEjecutando Invoice.....\n"
+								sleep 2;
+								pin_inv_accts -verbose -file genera_invoice_QV.txt
+								echo "\nIngrese la fecha del ciclo Inicial en formato: mm/dd/yyyy "
+								read cicloi;
+								echo "\nIngrese la fecha del ciclo Final en formato: mm/dd/yyyy "
+								read ciclof;
+								echo "\nEjecutando Export....."
+								sleep 2;
+								pin_inv_export -verbose -start $cicloi -end $ciclof –detail genera_invoice_QV.txt
+								echo "\n";
+								echo "Buscando archivos .xslt"
+								sleep 2;
+								cd /brm/pin/7.4/apps/pin_inv/invoice_dir
+								echo "\n"
+								echo "********************************************"
+								echo "Archivo: \n"
+								ls -ltr | tail -1;
+								echo "";
+								echo "Ruta de Salida: "
+								echo "\nRuta de salida: cd /brm/pin/7.4/apps/pin_inv/invoice_dir";
+								echo "*********************************************"
+								echo "\nSaliendo de la Aplicacion....";
+								sleep 2;
+								exit;;								
+					*) echo "es una opcion invalida. es Y,y,S,s,N,n,OK,ok";
+     		 		 echo "Presiona una tecla para continuar...";
+     		 		 read foo;;
+     			esac
+     			continue;;
+  		4) break;;
+     *) echo "es una opcion invalida. es de 1 a 3";
+     		 echo "Presiona una tecla para continuar...";
+     		 read foo;;
+     esac
+     done
+     continue;;
+  3) clear;
+  	 while :
+		do
+ 		echo "\n ************ GESTION DE PIPELINE ************  	\n"
+ 		echo " Elija una opcion ";
+ 		echo "1. Subir Pipe Voz";
+ 		echo "2. Subir Pipe GPRS";
+ 		echo "Seleccione una opcion [1 - 3]"
+ 		read pipe
+ 		case $pipe in
+  		1) clear;
+  			echo "Subiendo PIPE de VOZ..."
+  			echo "\n"
+  			sleep 2;
+  			cd /brm/pin/ifw/semaphore
+  	 	  cp stop_gprs_pipeline.reg retail_semaphore.reg
+  	 	  echo "************************"
+  	 	  echo "PIPE de VOZ arriba... "
+  	 	  echo "************************"
+  	 	  sleep 2;
+  	 	  #voz=`psme | grep ifw`
+  	 	  echo $voz;
+  	 	  echo "\n***Los registros ./conf/mediacion.reg y ./conf/retail.reg deben estar arriba, ejecute el siguiente comando: "
+  	 	  echo "\n"
+  	 	  sleep 4;
+  	 	  echo "************************"
+  	 	  echo "psme | grep ifw"
+  	 	  echo "************************"
+  	 	  sleep 2;
+  	 	  echo "\n";
+  	 	  echo "";
+  	 	  exit;;
+  		2) clear;
+  			echo "Subiendo PIPE GPRS..."
+  			echo "\n"
+  			sleep 2;
+  			cd /brm/pin/ifw/semaphore
+  	 	  cp stop_retail_pipeline.reg retail_semaphore.reg
+  	 	  echo "************************"
+  	 	  echo "PIPE GPRS arriba... "
+  	 	  echo "************************"
+  	 	  sleep 2;
+  	 	  #gprs=`psme | grep ifw`;
+  	 	  echo $gprs;
+  	 	  echo "\n***Los registros ./conf/mediacion.reg y ./conf/retail.reg deben estar arriba, ejecute el siguiente comando: "
+  	 	  echo "\n"
+  	 	  sleep 4;
+  	 	  echo "************************"
+  	 	  echo "psme | grep ifw"
+  	 	  echo "************************"
+  	 	  sleep 2;
+  	 	  echo "\n";
+  	 	  exit;;
+  		3) break;;
+     *) echo "es una opcion invalida. es de 1 a 3";
+     		 echo "Presiona una tecla para continuar...";
+     		 read foo;;
+     esac
+     done
+     continue;;
+  4) clear;
+  	 echo "
+*******************************PROCESO DE PAGOS*******************************************
+
+-Ruta donde se crea el archivo: /data/iel/pagos/in
+-Carpetas: /data/iel/pagos/
+
+Inmediatamente el archivo este en la carpeta Success se ve reflejado el pago.
+NOTA: ANTES de ejecutar todo este proceso, por favor asegurese de que este arriba la instancia, debe aparecer ./iel_roam (para roaming) y /iel
+
+---------------------------
+Comando: psme | grep iel
+---------------------------
+
+Si no se muestra iel arriba:
+ - Ingresar a la ruta /brm/pin/7.4/millicom_custom/apps/tools/iel (Comando: cd /brm/pin/7.4/millicom_custom/apps/tools/iel)
+ - Validar si existe el archivo iel.pid, si existe renombrarlo como iel.pid.old (Comando: cp iel.pid iel.pid.old)
+ - Ejecutar: perl ./start_iel
+
+******************************************************************************************"
+		 sleep 5;
+  	 echo "\nDebe ingresar la fecha del pago, segun la fecha del PVT\n"
+  	 echo "Ingrese el Anio... eje: 2013";
+  	 read panio;
+  	 echo "Ingrese el Mes... eje: Para enero seria 01";
+  	 read pmes;
+  	 echo "Ingrese el dia... eje: 03";
+  	 read pdia;
+  	 echo "Ingrese el numero de la cuenta ";
+  	 read pcuenta;
+  	 echo "Ingrese el valor a pagar sin puntos  (ej: 34900)";
+  	 read pvalor;
+  	 echo "\nCreando archivo load_payment_$pdia$pmes$panio.txt"
+  	 sleep 2;
+  	 cd /data/iel/pagos/in;
+  	 > load_payment_$pdia$pmes$panio.txt;
+  	 echo "$pcuenta;$pvalor;;00000;005;ASOBANK;BANCAFE;$pdia/$pmes/$panio;01" >> load_payment_$pdia$pmes$panio.txt;
+  	 echo "\nEsperando a que procese el pago, el archivo pasara por done y finalmente en succsess...."
+  	 sleep 4;
+  	 echo "\nVerificando que el archivo haya quedado en la carpeta success...\n"
+  	 sleep 4;
+  	 cd /data/iel/pagos/success
+  	 ls -ltr | grep payment_$pdia$pmes$panio.txt;
+  	 echo "\nProceso Finalizado...."
+  	 sleep 2;
+  	 echo "Saliendo de la Aplicacion..."
+  	 sleep 2;
+  	 exit;;
+  5) clear;
+  	 echo "
+*****************************ATENCION***********************************  	 
+
+En este campo, podras Validar todos los Apuntamientos de los Ambientes
+de CRM a (SIEBEL,GWACTIVATOR,INFRANET).
+
+
+************************************************************************
+"
+ 		while :
+		do
+ 		echo "\n ************ GESTION DE AMBIENTES ************  	\n"
+ 		echo " Elija una opcion ";
+ 		echo "1. CRM 10.69.42.27";
+ 		echo "2. CRM 10.69.42.28";
+ 		echo "3. CRM 10.69.42.53";
+ 		echo "4. CRM 10.69.42.13";
+ 		echo "5. CRM 10.69.42.47";
+ 		echo "5. CRM 10.69.42.37";
+ 		echo "6. Volver"
+ 		echo "Seleccione una opcion [1 - 6]"
+ 		read amb
+ 		case $amb in
+  		1) clear;
+  			 echo "***************AMBIENTE CRM 27***************";
+  			 echo "\n";
+  			 echo "Ingresando a servidor CRM...."
+  			 sleep 2;
+  			 ./crm_27
+  			 exit;;
+  	 6) break;;
+  	 *) clear;
+  	 		echo "es una opcion invalida. es de 1 a 6";
+     		echo "Presiona una tecla para continuar...";
+     		read foo;;
+     esac
+     done
+     continue;;
+  6) clear;
+  		echo "
+************Recargas de Ciclo *****************
+
+Actualmente se cuenta con tres procesos de recargas de ciclo, para Voz y Datos.
+
+1.	Lineas Control
+2.	Lineas Pospago RTB
+3.	Lineas Control con cambio de ciclo – Lineas que han cambiado de ciclo, 
+        bien sea por el proceso de jerarquías o por un cambio de ciclo directamente desde crm
+			
+Los procesos anteriores estan en la ruta: /brm/pin01/7.4/millicom_custom/scripts/recargas_ciclo
+"
+		while :
+		do
+ 		echo " ******************* Seleccione el tipo de Recarga **********************"
+ 		echo " Elija una opcion ";
+ 		echo "1. Lineas Control";
+ 		echo "2. Lineas Pospago RTB";
+ 		echo "3. Lineas Control con cambio de ciclo";
+ 		echo "4. Volver al menu principal";
+ 		echo "Seleccione una opcion [1 - 4]"
+ 		read op
+ 		case $op in
+  		1) clear
+     	   echo "
+     	   
+***************Ejecutando Shell******************
+     	   
+1.	Lineas Control:	
+		a.	CtaControlada.sh 	(salida en la ruta: /brm/pin01/7.4/millicom_custom/scripts/recargas_ciclo/out/control)
+		b.	CtldaDatos.sh		(salida en la ruta: /brm/pin01/7.4/millicom_custom/scripts/recargas_ciclo/out/control_datos)
+
+Se comenzara a ejecutar cada shell...
+"
+     			cd /brm/pin01/7.4/millicom_custom/scripts/recargas_ciclo;
+     			echo "Ejecutando Shell CtaControlada.sh ... \n"
+     			sleep 2
+		 			sh CtaControlada.sh
+		 			echo "\nEjecutando Shell CtldaDatos.sh ... \n"
+		 			sh CtldaDatos.sh
+		 			sleep 2
+		 			echo ""
+		 			echo "*********Ejecucion Finalizada \n"
+		 			echo "";;
+  		2) clear
+     		 echo "
+     		 
+***************Ejecutando Shell******************
+
+2.	Lineas Pospago RTB	
+		a.	CtaControladaRTB.sh	(salida en la ruta: /brm/pin01/7.4/millicom_custom/scripts/recargas_ciclo/out/pospago_rtb)
+		b.	CtldaDatosRTB.sh	(salida en la ruta: /brm/pin01/7.4/millicom_custom/scripts/recargas_ciclo/out/pospago_datos_rtb)
+     
+"
+     		cd /brm/pin01/7.4/millicom_custom/scripts/recargas_ciclo;
+     		echo "Ejecutando Shell CtaControladaRTB.sh ... \n"
+     		sleep 2;
+     		sh CtaControladaRTB.sh
+     		echo "\nEjecutando Shell CtldaDatosRTB.sh ... \n"
+     		sleep 2
+		 		sh CtldaDatosRTB.sh
+		 		echo ""
+		 		echo "*********Ejecucion Finalizada \n"
+     		echo "";;
+  		3) clear
+     		 echo "
+     		 
+***************Ejecutando Shell******************
+
+3.	Lineas Control con cambio de ciclo
+		a.	CtaControlada_cciclo.sh	(salida en la ruta: /brm/pin01/7.4/millicom_custom/scripts/recargas_ciclo/out/control_cciclo)
+		b.	CtldaDatos_cciclo.sh	(salida en la ruta: /brm/pin01/7.4/millicom_custom/scripts/recargas_ciclo/out/control_datos_cciclo)
+     
+"
+     		cd /brm/pin01/7.4/millicom_custom/scripts/recargas_ciclo;
+     		echo "Ejecutando Shell CtaControlada_cciclo.sh ... \n"
+     		sleep 2
+		 		sh CtaControlada_cciclo.sh
+		 		echo "\nEjecutando Shell CtldaDatos_cciclo.sh ... \n"
+		 		sleep 2
+		 		sh CtldaDatos_cciclo.sh
+		 		echo ""
+		 		echo "*********Ejecucion Finalizada \n"
+				echo "";;
+  		4) break;;
+  		*) echo "es una opcion invalida. es de 1 a 4";
+     		 echo "Presiona una tecla para continuar...";
+     		 read foo;;
+     esac
+     done
+     continue;;
+  7) exit;;
+  *) clear;
+  	 echo "es una opcion invalida. es de 1 a 8";
+     echo "Presiona una tecla para continuar...";
+     read foo;;
+esac
+done
