@@ -17,7 +17,7 @@ echo -e "\t\033[0;32m[Completado]\033[0m";done;
 echo "";
 echo "Cargado con Éxito !!"
 echo "";
-autor="Autor: Edison Chaparro";
+autor="Autor: Edison Ch";
 FECHA=$(date)
 echo "Autor $autor";
 echo $FECHA; 
@@ -33,7 +33,7 @@ echo $autor >> datos.txt
 echo "";
 while :
 do
- echo " ******************* BASH EN LINUX  **********************"
+ echo " ******************* INFO PC LINUX  **********************"
  echo " Elija una opción "
  echo "1. Que usuario soy?"
  echo "2. cuanto espacio tengo en mi Equipo"
