@@ -1,4 +1,4 @@
 Testing
 =======
 
-Shell info pc Linux
+Shell Unix y Linux
