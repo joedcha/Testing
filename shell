@@ -1,0 +1,223 @@
+#!/bin/bash
+#**
+# Autor Edison Ch.
+# 
+#
+clear
+> datos.txt
+echo "";
+for (( j=1; j<=1;j++ ));
+ do
+echo -e "Iniciando Aplicación \c" ;
+for (( i=0; i<=40; i++ ));
+do 
+echo -e "\033[0;32m.\c";sleep 0.25;done;
+echo -e "\c";
+echo -e "\t\033[0;32m[Completado]\033[0m";done;
+echo "";
+echo "Cargado con Éxito !!"
+echo "";
+autor="Autor: Edison Chaparro";
+FECHA=$(date)
+echo "Autor $autor";
+echo $FECHA; 
+SOY=$(whoami)
+ESP=$(df)
+VER=$(uname -r)
+SIS=$(uname -a)
+DEFAULT="1m";
+LETRA="0m";
+CFONDO="";
+echo $FECHA >> datos.txt
+echo $autor >> datos.txt
+echo "";
+while :
+do
+ echo " ******************* BASH EN LINUX  **********************"
+ echo " Elija una opción "
+ echo "1. Que usuario soy?"
+ echo "2. cuanto espacio tengo en mi Equipo"
+ echo "3. Version de su sistema"
+ echo "4. Informacion del sistema"
+ echo "5. Cambiar de color de fondo y letra"
+ echo "6. Entrar a Internet"
+ echo "7. Reiniciar el Equipo"
+ echo "8. Salir"
+ echo -n "Seleccione una opcion [1 - 8]"
+ read opcion
+ case $opcion in
+  1) clear
+     echo "Tu usuario es:";
+     echo $SOY >> datos.txt;
+     echo $SOY;
+     echo "";;
+  2) clear
+     echo "Espacio en Disco: ";
+     echo $ESP >> datos.txt;
+     echo $ESP;
+     echo "";;
+  3) clear
+     echo "Version del sistema: ";
+     echo $VER >> datos.txt;
+     echo $VER;
+     echo "";;
+  4) clear
+     echo "Informacion del sistema: ";
+     echo $SIS >> datos.txt;
+     echo $SIS;
+     echo "";;
+  5) clear
+     echo "";
+     while :
+  do
+	 echo " Color de Letra "
+	 echo "1. Gris"
+	 echo "2. Rojo"
+	 echo "3. Verde"
+	 echo "4. Amarillo"
+	 echo "5. Azul"
+	 echo "6. Morado"
+	 echo "7. Cyan"
+	 echo "8. Blanco"
+	 echo -n "Seleccione una opcion [1 - 8]"
+	 read color
+	 case $color in
+		1) LETRA="0;30m";
+		   echo -en "$EINS \033[$LETRA Escogio el color Gris\033[0m";
+		   echo "";
+		   break;;
+		2) LETRA="0;31m";
+		   echo -en "$EINS \033[$LETRA Escogio el color Rojo\033[0m";
+		   echo "";
+		   break;;
+		3) LETRA="0;32m";
+		   echo -en "$EINS \033[$LETRA Escogio el color Verde\033[0m";
+		   echo "";
+		   break;;
+		4) LETRA="0;33m";
+		   echo -en "$EINS \033[$LETRA Escogio el color Amarillo\033[0m";
+		   echo "";
+		   break;;
+		5) LETRA="0;34m";
+		   echo -en "$EINS \033[$LETRA Escogio el color Azul\033[0m";
+		   echo "";
+		   break;;
+		6) LETRA="0;35m";
+		   echo -en "$EINS \033[$LETRA Escogio el color Morado\033[0m";
+		   echo "";
+		   break;;
+		7) LETRA="0;36m";
+		   echo -en "$EINS \033[$LETRA Escogio el color Cyan\033[0m";
+		   echo "";
+		   break;;
+		8) LETRA="1;37m";
+		   echo -en "$EINS \033[$LETRA Escogio el color Blanco\033[0m";
+		   echo "";
+		   break;;
+		*) echo "es una opcion invalida. es de 1 a 8";
+		   echo "Presiona una tecla para continuar...";
+		   read foo;;
+	 esac
+         done
+         echo "";
+         while :
+	 do
+		 echo " Color de Fondo "
+		 echo "1. Gris Oscuro"
+		 echo "2. Rojo"
+		 echo "3. Verde"
+		 echo "4. Amarillo"
+		 echo "5. Azul"
+		 echo "6. Morado"
+		 echo "7. Cyan"
+		 echo "8. Gris Claro"
+		 echo -n "Seleccione una opcion [1 - 8]"
+		 read fondo
+		 case $fondo in
+			1) CFONDO="40m";
+		           echo -en "$EINS \033[$DEFAULT Este es su fondo \033[$CFONDO      \033[0m";
+			   echo "";
+			   break;;
+			2) CFONDO="41m";
+		           echo -en "$EINS \033[$DEFAULT Este es su fondo \033[$CFONDO      \033[0m";
+			   echo "";
+			   break;;
+			3) CFONDO="42m";
+		           echo -en "$EINS \033[$DEFAULT Este es su fondo \033[$CFONDO      \033[0m";
+			   echo "";
+			   break;;
+			4) CFONDO="43m";
+		           echo -en "$EINS \033[$DEFAULT Este es su fondo \033[$CFONDO      \033[0m";
+			   echo "";
+			   break;;
+			5) CFONDO="44m";
+		           echo -en "$EINS \033[$DEFAULT Este es su fondo \033[$CFONDO      \033[0m";
+			   echo "";
+			   break;;
+			6) CFONDO="45m";
+		           echo -en "$EINS \033[$DEFAULT Este es su fondo \033[$CFONDO      \033[0m";
+			   echo "";
+			   break;;
+			7) CFONDO="46m";
+		           echo -en "$EINS \033[$DEFAULT Este es su fondo \033[$CFONDO      \033[0m";
+			   echo "";
+			   break;;
+			8) CFONDO="47m";
+		           echo -en "$EINS \033[$DEFAULT Este es su fondo \033[$CFONDO      \033[0m";
+			   echo "";
+			   break;;
+			*) echo "es una opcion invalida. es de 1 a 8";
+			   echo "Presiona una tecla para continuar...";
+			   read foo;;
+		 esac
+	         done
+		echo "";
+		echo "Escriba el texto para que se aplique el color de fondo y letra escogidos";
+	 	read text
+		echo "";
+                echo "Su texto quedo de la siguiente forma ";
+		echo "";
+		echo -en "$EINS \033[$LETRA\033[$CFONDO $text \033[0m";
+	        echo "";
+                continue;;	
+  6) clear
+     echo "Ingrese la URL";
+     read URL
+     xdg-open "$URL";
+     echo "";;
+  7) gdialog --msgbox "Para reiniciar debes ser super usuario ";
+     echo "Sistema reiniciado el: " >> datos.txt; echo $FECHA >>  datos.txt;
+     echo "En cuanto tiempo quiere que se reinicie el PC en minutos ";
+     read time;
+     gdialog --msgbox "Su sistema se reiniciara en $time minutos ";
+     sudo shutdown +$time -r;
+     echo "";;
+  8) while true; do
+    read -p "esta seguro que quieres salir ? (s/n) " yn
+    case $yn in
+        s) echo "";
+           for (( j=1; j<=1;j++ ));
+	   do
+		echo -e "Guardando datos en datos.txt \c" ;
+		for (( i=0; i<=20; i++ ));
+		do 
+		echo -e "\033[0;32m.\c";sleep 0.25;done;
+		echo -e "\c";
+		echo -e "\t\033[0;32m[Completado]\033[0m";done;
+		echo "";
+           gdialog --msgbox "Datos guardados con Éxito, Adios... ";
+           echo "";
+           > datos.txt
+           echo $FECHA >> datos.txt; echo $autor >> datos.txt;
+           echo $SOY >> datos.txt; echo $ESP >> datos.txt; echo $VER >> datos.txt; echo $SIS >> datos.txt;
+           exit;;
+        n) break;;
+       *) echo "por favor responda (s) o (n)";;
+      esac
+      done
+      continue;;
+   *) echo "es una opcion invalida. es de 1 a 8";
+     echo "Presiona una tecla para continuar...";
+     read foo;;
+esac
+done
